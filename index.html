@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+
+<script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+<body>
+
+<canvas id="canvas" class="glslCanvas" 
+data-fragment-url="shader.frag" 
+data-textures="background.jpg"
+width="500" 
+height="500"></canvas>
+
+
+<div>
+	Center: <input type="text" id="center" onkeyup="uniform_change()" value="0.5,0.5">
+</div>
+
+<div>
+	Force: <input type="text" id="force" onkeyup="uniform_change()" value="0.2">
+</div>
+
+<div>
+	Size: <input type="text" id="size" onkeyup="uniform_change()" value="0.0">
+</div>
+
+<div>
+	Thickness: <input type="text" id="thickness" onkeyup="uniform_change()" value="0.1">
+</div>
+
+
+<div>
+	<button id="play" onclick="play()">Play</button>
+</div>
+
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+	let canvas;
+
+	let center     = document.querySelector("#center");
+	let force      = document.querySelector("#force");
+	let size       =  document.querySelector("#size");
+	let thickness  =  document.querySelector("#thickness");
+
+	function uniform_change(){
+		let _center = center.value.split(",").map(e=> parseFloat(e));
+		let _force      = parseFloat( force.value );
+		let _size       = parseFloat( size.value );
+		let _thickness  = parseFloat( thickness.value );
+
+		
+		// console.log(center_vec)
+		// console.log(force)
+		// console.log(size)
+		// console.log(thickness)
+		canvas.setUniform( "center", _center[0], _center[1] );
+		canvas.setUniform( "force", _force );
+		canvas.setUniform( "size", _size );
+		canvas.setUniform( "thickness", _thickness );
+
+		console.log("uniform change");
+
+	}
+
+	function on_load() {
+		canvas = glslCanvases[0]
+		canvas.on("load", uniform_change)
+	}
+
+	window.onload = on_load;
+	
+
+	function play() {
+		setInterval( function(){
+			let v = parseFloat( size.value ) + 0.01;
+			if(v > 0.9) v= 0;
+			size.value = v;
+			canvas.setUniform( "size", v ); 
+		}, 1000 / 60 )		
+	}
+
+
+
+</script>
+
+
+
+
